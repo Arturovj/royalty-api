@@ -19,6 +19,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Name is required']
     },
+    direction: {
+      type: String,
+    },
+    avatar: {
+      type: String,
+    },
+    age: {
+      type: Number,
+    },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -37,6 +46,13 @@ const userSchema = new mongoose.Schema(
     }
   }
 )
+
+userSchema.virtual('posts', {
+  ref: 'Post',
+  localField: '_id',
+  foreignField: 'user',
+  justOne: false,
+})
 
 userSchema.pre('save', function(next) {
   if (this.isModified('password')) {
