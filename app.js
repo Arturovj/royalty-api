@@ -40,9 +40,9 @@ app.use((error, req, res, next) => {
   } else if (!error.status) {
     error = createError(500, error);
   }
+  console.error(error);
 
   if (error.status >= 500) {
-    console.error(error);
   }
 
   const data = {};
