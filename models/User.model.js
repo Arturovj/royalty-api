@@ -25,6 +25,14 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
+    followers: {
+      type: Array,
+      default: [],
+    },
+    followings: {
+      type: Array,
+      default: [],
+    },
     age: {
       type: Number,
     },
