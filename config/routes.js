@@ -69,6 +69,20 @@ router.get("/conversations/:userId", async (req,res) => {
 
 });
 
+// get conversation includes two userId
+
+router.get("/conversations/find/:firstUserId/:secondUserId", async (req, res) =>{
+  try {
+    const conversation = await Conversation.findOne({
+      members: { $all: [req.params.firstUserId, req.params.secondUserId] },
+    });
+    res.status(200).json(conversation)
+  } catch (error) {
+    res.status(500).json(err)
+  }
+})
+
+
 /* Messages */
 
 router.post("/messages", async (req,res) => {
@@ -97,8 +111,9 @@ router.get("/messages/:conversationId", async (req,res) => {
 
 
 
+
 //get friends
-router.get("/friends/:userId", async (req, res) => {
+router.get("/users/friends/:userId", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
     const friends = await Promise.all(
@@ -119,7 +134,7 @@ router.get("/friends/:userId", async (req, res) => {
 
 //follow a user
 
-router.put("/:id/follow", async (req, res) => {
+router.put("/users/:id/follow", async (req, res) => {
   if (req.body.userId !== req.params.id) {
     try {
       const user = await User.findById(req.params.id);
@@ -141,7 +156,7 @@ router.put("/:id/follow", async (req, res) => {
 
 //unfollow a user
 
-router.put("/:id/unfollow", async (req, res) => {
+router.put("/users/:id/unfollow", async (req, res) => {
   if (req.body.userId !== req.params.id) {
     try {
       const user = await User.findById(req.params.id);
