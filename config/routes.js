@@ -134,20 +134,21 @@ router.get("/users/friends/:userId", async (req, res) => {
 
 //follow a user
 
-router.put("/users/:id/follow", async (req, res) => {
-  if (req.body.userId !== req.params.id) {
+router.put("/users/me/follow", authMiddleware.isAuthenticated, async (req, res, next) => {
+  if (req.body.userId !== req.currentUser) {
     try {
-      const user = await User.findById(req.params.id);
-      const currentUser = await User.findById(req.body.userId);
-      if (!user.followers.includes(req.body.userId)) {
-        await user.updateOne({ $push: { followers: req.body.userId } });
-        await currentUser.updateOne({ $push: { followings: req.params.id } });
+      const user = await User.findById(req.currentUser);
+      
+      if (!user.followings.includes(req.body.userId)) {
+        user.followings.push(req.body.userId)
+        await user.save()
+        await User.findByIdAndUpdate(req.body.userId, { $push: { followers: req.currentUser} });
         res.status(200).json("user has been followed");
       } else {
         res.status(403).json("you allready follow this user");
       }
     } catch (err) {
-      res.status(500).json(err);
+     next(err)
     }
   } else {
     res.status(403).json("you cant follow yourself");
@@ -156,20 +157,21 @@ router.put("/users/:id/follow", async (req, res) => {
 
 //unfollow a user
 
-router.put("/users/:id/unfollow", async (req, res) => {
-  if (req.body.userId !== req.params.id) {
+router.put("/users/me/unfollow",  authMiddleware.isAuthenticated, async (req, res, next) => {
+  if (req.body.userId !== req.currentUser) {
     try {
-      const user = await User.findById(req.params.id);
-      const currentUser = await User.findById(req.body.userId);
-      if (user.followers.includes(req.body.userId)) {
-        await user.updateOne({ $pull: { followers: req.body.userId } });
-        await currentUser.updateOne({ $pull: { followings: req.params.id } });
+      const user = await User.findById(req.currentUser);
+
+      if (user.followings.includes(req.body.userId)) {
+        user.followings = user.followings.filter((id) => id !== req.body.userId)
+        await user.save()
+        await User.findByIdAndUpdate(req.body.userId, { $pull: { followers: req.currentUser } });
         res.status(200).json("user has been unfollowed");
       } else {
         res.status(403).json("you dont follow this user");
       }
     } catch (err) {
-      res.status(500).json(err);
+      next(err)
     }
   } else {
     res.status(403).json("you cant unfollow yourself");
