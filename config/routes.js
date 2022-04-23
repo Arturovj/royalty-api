@@ -27,7 +27,7 @@ router.post('/login', authMiddleware.isNotAuthenticated, authController.login)
 
 /* Users */
 
-router.post('/users', authController.create)
+router.post('/users',upload.single('image'), authController.create)
 router.get('/users', authMiddleware.isAuthenticated, usersController.list)
 router.get('/users/me', authMiddleware.isAuthenticated, usersController.getCurrentUser)
 router.get('/users/:id', usersController.getUserById)
@@ -35,7 +35,7 @@ router.patch('/users/:id', usersController.updateUser)
 
 /* Posts*/
 
-router.post('/post/new', postsController.create)
+router.post('/post/new',upload.single('image'), authMiddleware.isAuthenticated, postsController.create)
 router.get('/post/:id', postsController.detail)
 router.patch('/post/:id', postsController.update)
 router.delete('/post/:id', postsController.delete)

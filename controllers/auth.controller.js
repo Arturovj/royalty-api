@@ -3,7 +3,14 @@ const createError = require('http-errors')
 const User = require('../models/User.model')
 
 module.exports.create = (req, res, next) => {
-  User.create(req.body)
+
+  const newUser = req.body
+
+  if (req.file) {
+    newUser.avatar = req.file.path
+  }
+
+  User.create(newUser)
     .then(user => {
       res.status(201).json(user)
     })

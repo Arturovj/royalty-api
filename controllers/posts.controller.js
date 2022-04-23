@@ -1,8 +1,16 @@
 const Post = require('../models/Post.model')
 
 module.exports.create = (req, res, next) => {
-  const post = { user, description } = req.body
-  Post.create(post)
+  
+  const newPost = req.body
+
+  newPost.user = req.currentUser
+
+  if (req.file) {
+    newPost.image = req.file.path
+  }
+
+  Post.create(newPost)
     .then(post => res.status(200).json(post))
     .catch(next)
 }
