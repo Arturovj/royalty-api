@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema(
     age: {
       type: Number,
     },
+    verified:{
+      type: Boolean,
+      default: false
+    },
     password: {
       type: String,
       required: [true, 'Password is required'],
