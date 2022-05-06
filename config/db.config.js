@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const DB_NAME = 'royalty';
-const URI = process.env.MONGODB_URI || 'mongodb+srv://arturo:arturo@cluster0.9xvkf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const URI = process.env.MONGODB_URI || '';
 const DB_URI = `${URI}/${DB_NAME}`;
 
 mongoose
